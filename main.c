@@ -21,6 +21,9 @@ int main(int argc, char **argv)
       writetest = true;
     }else if(strncmp(argv[1],"-c",2) == 0){
       calibrate_9s08 = true;
+    }else if(strncmp(argv[1],"-d",2) == 0){
+      verbose = true;
+      ValueToDatabase("ts",1,2,'a');
     }
   }
 

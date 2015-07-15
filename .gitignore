@@ -2,3 +2,5 @@ backups/
 obj/
 
 *.lru
+
+credentials.txt

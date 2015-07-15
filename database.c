@@ -28,11 +28,48 @@ void ValueToDatabase(char* date_time, int countervalue, int hourcounter, char ww
    MYSQL *conn;
    MYSQL_RES *res;
 
-  /* Change me */
+   FILE* fp;
+
+   /* Change me */
    char server[50];
    char user[50];
    char password[50];
    char database[50];
+
+   fp = fopen("credentials.txt","r");
+   if(fp==NULL){
+     printf("\r\nUnable to open credentials.txt\n");
+     exit(1);
+   }else{
+     char zeile[250];
+     int lines = 0;
+     int len;
+     int i;
+     while(fgets(zeile,sizeof(zeile)-1,fp)) {
+       printf("Zeile %d : %s\n",lines,zeile);
+       len = strlen(zeile);
+       printf("laenge: %d\n",len);
+       for(i=0;i<len;i++){
+         //if(!isascii(zeile[i])){
+         if(!isalnum(zeile[i])){
+           printf("position: %d\n",i);
+           zeile[i] = 0x00;
+           break;
+         }
+       }
+       if(lines==0){
+         sprintf(server,"%s",zeile);
+       }else if(lines==1){
+         sprintf(user,"%s",zeile);
+       }else if(lines==1){
+         sprintf(password,"%s",zeile);
+       }else if(lines==1){
+         sprintf(database,"%s",zeile);
+       }
+       lines++;
+     }
+     fclose(fp);
+   }
 
    conn = mysql_init(NULL);
 
@@ -45,6 +82,7 @@ void ValueToDatabase(char* date_time, int countervalue, int hourcounter, char ww
    }
 
    if(verbose){
+     printf("  Server: %s\n",server);
      printf("Database: %s\n",database);
      printf("    User: %s\n",user);
      printf("Password: %s\n",password);
