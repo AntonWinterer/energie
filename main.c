@@ -24,8 +24,39 @@ int main(int argc, char **argv)
     }else if(strncmp(argv[1],"-d",2) == 0){
       verbose = true;
       ValueToDatabase("ts",1,2,'a');
+    }else if(strncmp(argv[1],"-p",2) == 0){
+      verbose = true;
+      printf("v1: %s\n",argv[1]);
+      printf("v2: %s\n",argv[2]);
+      printf("v3: %s\n",argv[3]);
+      if(strncmp(argv[2],"1",1) == 0){
+        int val = atoi(argv[3]);
+        printf("val: %d\n",val);
+        SetPWM(1,val);
+      }else if(strncmp(argv[2],"2",1) == 0){
+        int val = atoi(argv[3]);
+        SetPWM(2,val);
+      }
+      return(0);
+    }
+  }else if(argc == 4){
+    if(strncmp(argv[1],"-p",2) == 0){
+      verbose = true;
+      printf("v1: %s\n",argv[1]);
+      printf("v2: %s\n",argv[2]);
+      printf("v3: %s\n",argv[3]);
+      if(strncmp(argv[2],"1",1) == 0){
+        int val = atoi(argv[3]);
+        printf("val: %d\n",val);
+        SetPWM(1,val);
+      }else if(strncmp(argv[2],"2",1) == 0){
+        int val = atoi(argv[3]);
+        SetPWM(2,val);
+      }
+      return(0);
     }
   }
+
 
   if(readtest){
     ReadTest();

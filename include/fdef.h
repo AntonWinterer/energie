@@ -11,6 +11,7 @@ char GetTemperaturValue_LM75_8Bit(int lm75_devicenumber);
 void ReadTest(void);
 void WriteTest(void);
 void Calibrate9s08(void);
+void SetPWM(int ch, int val);
 
 //Prototypen fuer database.c
 void ValueToDatabase(char* date_time, int countervalue, int hourcounter, char wwtemperature);

@@ -46,25 +46,29 @@ void ValueToDatabase(char* date_time, int countervalue, int hourcounter, char ww
      int len;
      int i;
      while(fgets(zeile,sizeof(zeile)-1,fp)) {
-       printf("Zeile %d : %s\n",lines,zeile);
+       //printf("Zeile %d : %s\n",lines,zeile);
        len = strlen(zeile);
-       printf("laenge: %d\n",len);
+       //printf("laenge: %d\n",len);
        for(i=0;i<len;i++){
          //if(!isascii(zeile[i])){
          if(!isalnum(zeile[i])){
-           printf("position: %d\n",i);
+           //printf("position: %d\n",i);
            zeile[i] = 0x00;
            break;
          }
        }
        if(lines==0){
          sprintf(server,"%s",zeile);
+         printf("server: %s\n",server);
        }else if(lines==1){
          sprintf(user,"%s",zeile);
-       }else if(lines==1){
+         printf("user: %s\n",user);
+       }else if(lines==2){
          sprintf(password,"%s",zeile);
-       }else if(lines==1){
+         printf("password: %s\n",password);
+       }else if(lines==3){
          sprintf(database,"%s",zeile);
+         printf("database: %s\n",database);
        }
        lines++;
      }

@@ -303,3 +303,32 @@ void Calibrate9s08(void)
 //  wiringPiI2CWriteReg8(q2w, 0x03, 200); //Kalibrierung fertigstellen
   printf("ElapsedSecondsToday: %d\n",end);
 }
+
+
+void SetPWM(int ch, int val)
+{
+  int q2w;
+  int i2c_address = 0x50;
+
+  if(ch == 1 || ch == 2){
+    if(val < 0){
+      val = 0;
+    }
+    if(val > 100){
+      val = 100;
+    }
+
+    if(verbose){
+      printf("pwm channel: %d\n",ch);
+      printf("  pwm value: %d\n",val);
+    }
+
+//    if ((q2w = wiringPiI2CSetup (i2c_address)) == -1){
+//      printf("q2w: Unable to initialise I2C: %s\n", strerror (errno)) ;
+//      exit(1);
+//    }
+//    wiringPiI2CWriteReg8(q2w, ch, val);
+  }
+
+
+}
