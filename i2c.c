@@ -236,7 +236,7 @@ void ReadTest(void)
 {
   int q2w;
   int i2c_address = 0x49;
-  int r;
+//  int r;
   char t;
 
   if ((q2w = wiringPiI2CSetup (i2c_address)) == -1){
@@ -275,33 +275,44 @@ void ReadTest(void)
 void Calibrate9s08(void)
 {
 
-  int wait = 200;
-  int start,end;
+  int q2w;
+  int i2c_address = 0x50;
+  int r,r2;
 
-//  int q2w;
-//  int i2c_address = 0x50;
-//
-//  if ((q2w = wiringPiI2CSetup (i2c_address)) == -1){
-//    printf("q2w: Unable to initialise I2C: %s\n", strerror (errno)) ;
-//    exit(1);
-//  }
+  if ((q2w = wiringPiI2CSetup (i2c_address)) == -1){
+    printf("q2w: Unable to initialise I2C: %s\n", strerror (errno)) ;
+    exit(1);
+  }
 
+  r = wiringPiI2CReadReg8(q2w, 0x03);
+  r <<= 8;
+  r |= wiringPiI2CReadReg8(q2w, 0x02);
+  r <<= 8;
+  r |= wiringPiI2CReadReg8(q2w, 0x01);
+  r <<= 8;
+  r |= wiringPiI2CReadReg8(q2w, 0x00);
 
-  start = GetElapsedSecondsToday();
-  printf("Elapsed Seconds Today: %d\n",start);
-//  wiringPiI2CWriteReg8(q2w, 0x03, 0); //Kalibrierung starten
+  r2 = wiringPiI2CReadReg8(q2w, 24);
+  printf("%s : 9S08QG8 Sekunden: %7d Kalibrierwert: %4d\n",GetDateTimeString(),r,r2);
+
+  wiringPiI2CWriteReg8(q2w, 0x03, 0); //Kalibrierung
+
+/*
   do{
-    if((wait%20)==0){
-      printf("%4d\n",wait);
-    }
-    //printf(".");
+    //if((wait%20)==0){
+    //  printf("%4d\n",wait);
+    //}
+    printf("%4d\n",wait);
     //puts(".");
-    putchar('.');
+    //putchar('.');
     sleep(1);
   }while(--wait);
   end = GetElapsedSecondsToday();
-//  wiringPiI2CWriteReg8(q2w, 0x03, 200); //Kalibrierung fertigstellen
+  wiringPiI2CWriteReg8(q2w, 0x03, 200); //Kalibrierung fertigstellen
   printf("ElapsedSecondsToday: %d\n",end);
+  printf("DifferenceSeconds: %d\n",start-end);
+*/
+
 }
 
 
@@ -323,11 +334,11 @@ void SetPWM(int ch, int val)
       printf("  pwm value: %d\n",val);
     }
 
-//    if ((q2w = wiringPiI2CSetup (i2c_address)) == -1){
-//      printf("q2w: Unable to initialise I2C: %s\n", strerror (errno)) ;
-//      exit(1);
-//    }
-//    wiringPiI2CWriteReg8(q2w, ch, val);
+    if ((q2w = wiringPiI2CSetup (i2c_address)) == -1){
+      printf("q2w: Unable to initialise I2C: %s\n", strerror (errno)) ;
+      exit(1);
+    }
+    wiringPiI2CWriteReg8(q2w, ch, val);
   }
 
 
