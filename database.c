@@ -94,7 +94,9 @@ void ValueToDatabase(char* date_time, int countervalue, int hourcounter, char ww
 
    /* send SQL query */
    char sql_string[2048];
-   sprintf(sql_string,"INSERT INTO energieverbrauch VALUES('%s', %d, %d, %d);",date_time,countervalue,hourcounter,wwtemperature);
+   //sprintf(sql_string,"INSERT INTO energieverbrauch VALUES('%s', %d, %d, %d);",date_time,countervalue,hourcounter,wwtemperature);
+   sprintf(sql_string,"INSERT INTO energieverbrauch (uhrzeit, counter, hourcounter1, warmwassertemperatur) VALUES('%s', %d, %d, %d);",date_time,countervalue,hourcounter,wwtemperature);
+
    if(verbose){
      printf("%s\n",sql_string);
    }
