@@ -28,10 +28,12 @@ app: main.o i2c.o date_time.o database.o
 
 getobj:
 	@echo "get object files ..."
+	@if [ -d "$(OBJPATH)" ]; then echo "obj-dir exists"; else mkdir obj/; echo "obj-dir created"; fi
 	-mv $(OBJPATH)/*.o . 2>/dev/null
 
 putobj:
 	@echo "put object files ..."
+	@if [ -d "$(OBJPATH)" ]; then echo "obj-dir exists"; else mkdir obj/; echo "obj-dir created"; fi
 	-mv *.o $(OBJPATH) 2>/dev/null
 
 # Process only when app timestamp is changed

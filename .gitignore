@@ -2,6 +2,7 @@ backups/
 obj/
 
 *.lru
+*.wtag
 
 credentials.txt
 kal.txt

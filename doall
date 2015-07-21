@@ -1,0 +1,13 @@
+#!/bin/bash 
+
+if [ "$1" == "all" ]
+    then
+        touch *.*
+	make makefile all
+	echo "do all"
+    else
+        touch *.*
+	make makefile all
+	echo "do all"
+fi
+
