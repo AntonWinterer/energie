@@ -1,3 +1,8 @@
+- Projekt refactoring
+
+
+
+//// erledigt
 - makefile soll obj verzeichnis erstellen
 - do.sh zum laufen bringen
 
