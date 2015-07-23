@@ -120,13 +120,14 @@ int GetHourCounterValue_MC9S08QG8(int counternr)
   int i;
   int r[5];
   int value = 0;
+  int reg;
 
   if ((q2w = wiringPiI2CSetup (i2c_address)) == -1){
     printf("q2w: Unable to initialise I2C: %s\n", strerror (errno)) ;
     exit(1);
   }
 
-  if(counternr < 1 || counternr > 4){
+  if(counternr < 0 || counternr > 3){
     printf("\n\nwrong counter nr (%d)",counternr) ;
     exit(1);
   }
@@ -136,9 +137,10 @@ int GetHourCounterValue_MC9S08QG8(int counternr)
   }
 
   for(i=0;i<4;i++){
-    r[i] = wiringPiI2CReadReg8(q2w, (i+(counternr*4)));
+    reg = i+(counternr*4)+8;
+    r[i] = wiringPiI2CReadReg8(q2w, reg);
     if(verbose){
-      printf("register value [%d]: %02X\n",i,r[i]);
+      printf("register %2d: value [%d]: %02X\n",reg,i,r[i]);
     }
   }
   for(i=0;i<4;i++){

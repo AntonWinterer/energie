@@ -85,7 +85,7 @@ int main(int argc, char **argv)
   }
 
   for(i=0;i<4;i++){
-    hc[i] = GetHourCounterValue_MC9S08QG8(i+1);
+    hc[i] = GetHourCounterValue_MC9S08QG8(i);
     if(verbose){
       printf("counter: %d\n",hc[i]);
     }
