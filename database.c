@@ -23,7 +23,8 @@ Systemvorbereitung:
 #include "include/all.h"
 
 
-void ValueToDatabase(char* date_time, int countervalue, int hourcounter, char wwtemperature)
+void ValueToDatabase(char* date_time, int countervalue, char wwtemperature,
+                     int hourcounter1, int hourcounter2, int hourcounter3, int hourcounter4)
 {
    MYSQL *conn;
    MYSQL_RES *res;
@@ -46,13 +47,9 @@ void ValueToDatabase(char* date_time, int countervalue, int hourcounter, char ww
      int len;
      int i;
      while(fgets(zeile,sizeof(zeile)-1,fp)) {
-       //printf("Zeile %d : %s\n",lines,zeile);
        len = strlen(zeile);
-       //printf("laenge: %d\n",len);
        for(i=0;i<len;i++){
-         //if(!isascii(zeile[i])){
          if(!isalnum(zeile[i])){
-           //printf("position: %d\n",i);
            zeile[i] = 0x00;
            break;
          }
@@ -80,7 +77,6 @@ void ValueToDatabase(char* date_time, int countervalue, int hourcounter, char ww
    /* Connect to database */
    if (!mysql_real_connect(conn, server,
          user, password, database, 0, NULL, 0)) {
-      //fprintf(stderr, "%s\n", mysql_error(conn));
       printf("%s\n", mysql_error(conn));
       exit(1);
    }
@@ -95,13 +91,13 @@ void ValueToDatabase(char* date_time, int countervalue, int hourcounter, char ww
    /* send SQL query */
    char sql_string[2048];
    //sprintf(sql_string,"INSERT INTO energieverbrauch VALUES('%s', %d, %d, %d);",date_time,countervalue,hourcounter,wwtemperature);
-   sprintf(sql_string,"INSERT INTO energieverbrauch (uhrzeit, counter, hourcounter1, warmwassertemperatur) VALUES('%s', %d, %d, %d);",date_time,countervalue,hourcounter,wwtemperature);
+   sprintf(sql_string,"INSERT INTO energieverbrauch (uhrzeit, counter, warmwassertemperatur, hourcounter1, hourcounter2, hourcounter3, hourcounter4) VALUES('%s', %d, %d, %d, %d, %d, %d);",
+                       date_time,countervalue,wwtemperature,hourcounter1,hourcounter2,hourcounter3,hourcounter4);
 
    if(verbose){
      printf("%s\n",sql_string);
    }
    if (mysql_query(conn, sql_string)) {
-      //fprintf(stderr, "%s\n", mysql_error(conn));
       printf("%s\n", mysql_error(conn));
       exit(1);
    }
@@ -109,7 +105,6 @@ void ValueToDatabase(char* date_time, int countervalue, int hourcounter, char ww
 
    /* send SQL query */
    if (mysql_query(conn, "show tables")) {
-      //fprintf(stderr, "%s\n", mysql_error(conn));
       printf("%s\n", mysql_error(conn));
       exit(1);
    }
@@ -119,7 +114,6 @@ void ValueToDatabase(char* date_time, int countervalue, int hourcounter, char ww
    /* close connection */
    mysql_free_result(res);
    mysql_close(conn);
-
 
 }
 

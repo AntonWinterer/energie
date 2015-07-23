@@ -112,7 +112,7 @@ int GetCounterValue_MC9S08QG8(void)
 }
 
 
-int GetHourCounterValue_MC9S08QG8(void)
+int GetHourCounterValue_MC9S08QG8(int counternr)
 {
 
   int q2w;
@@ -126,12 +126,17 @@ int GetHourCounterValue_MC9S08QG8(void)
     exit(1);
   }
 
+  if(counternr < 1 || counternr > 4){
+    printf("\n\nwrong counter nr (%d)",counternr) ;
+    exit(1);
+  }
+
   if(verbose){
-    printf("\n\nhour counter\n");
+    printf("\n\nhour counter: %d \n",counternr);
   }
 
   for(i=0;i<4;i++){
-    r[i] = wiringPiI2CReadReg8(q2w, (i+4));
+    r[i] = wiringPiI2CReadReg8(q2w, (i+(counternr*4)));
     if(verbose){
       printf("register value [%d]: %02X\n",i,r[i]);
     }

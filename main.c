@@ -8,9 +8,11 @@ int calibrate_9s08 = false;
 
 int main(int argc, char **argv)
 {
-  char ts[50];
-  int v1,v2;
-  char v3;
+  int i;
+  char ts[50];//timestring
+  int cc;     //current counter (9S08QG8)
+  int hc[4];  //hour counter (9S08QG8)
+  char tv;    //temperatur value (LM75)
 
   if(argc == 2){
     if(strncmp(argv[1],"-v",2) == 0){
@@ -23,7 +25,7 @@ int main(int argc, char **argv)
       calibrate_9s08 = true;
     }else if(strncmp(argv[1],"-d",2) == 0){
       verbose = true;
-      ValueToDatabase("ts",1,2,'a');
+      ValueToDatabase("2015-07-23 00:00:00",1,2,10,11,12,13);
     }else if(strncmp(argv[1],"-p",2) == 0){
       verbose = true;
       printf("v1: %s\n",argv[1]);
@@ -77,23 +79,24 @@ int main(int argc, char **argv)
     printf("Uhrezeit: %s\n",ts);
   }
 
-  //v = GetCounterValue(); //vom Uhrenbaustein
-  v1 = GetCounterValue_MC9S08QG8();
+  cc = GetCounterValue_MC9S08QG8();
   if(verbose){
-    printf("counter: %d\n",v1);
+    printf("counter: %d\n",cc);
   }
 
-  v2 = GetHourCounterValue_MC9S08QG8();
-  if(verbose){
-    printf("counter: %d\n",v2);
+  for(i=0;i<4;i++){
+    hc[i] = GetHourCounterValue_MC9S08QG8(i+1);
+    if(verbose){
+      printf("counter: %d\n",hc[i]);
+    }
   }
 
-  v3 = GetTemperaturValue_LM75_8Bit(1);
+  tv = GetTemperaturValue_LM75_8Bit(1);
   if(verbose){
-    printf("LM75.1 temperature: %d\n",v3);
+    printf("LM75.1 temperature: %d\n",tv);
   }
 
-  ValueToDatabase(ts,v1,v2,v3);
+  ValueToDatabase(ts,cc,tv,hc[0],hc[1],hc[2],hc[3]);
 
   return(0);
 }
