@@ -62,7 +62,7 @@ int GetCounterValue(void)
 
   for(i=0;i<4;i++){
     r[i] = wiringPiI2CRead(q2w); //lesen von Addrespointer++
-    if(verbose){
+    if(verbose_max){
       printf("register value [%d]: %02X\n",i,r[i]);
     }
   }
@@ -86,25 +86,25 @@ int GetCounterValue_MC9S08QG8(void)
     exit(1);
   }
 
-  if(verbose){
+  if(verbose_max){
     printf("\n\ncurrent counter\n");
   }
 
   for(i=0;i<4;i++){
     r[i] = wiringPiI2CReadReg8(q2w, i);
-    if(verbose){
+    if(verbose_max){
       printf("register value [%d]: %02X\n",i,r[i]);
     }
   }
   for(i=0;i<4;i++){
     value <<= 8;
     value |= (r[3-i]);
-    if(verbose){
+    if(verbose_max){
       printf("value (i=%d): %08X\n",i,value);
     }
 
   }
-  if(verbose){
+  if(verbose_max){
     printf("value: %08d / %08x\n",value,value);
   }
 
@@ -132,26 +132,26 @@ int GetHourCounterValue_MC9S08QG8(int counternr)
     exit(1);
   }
 
-  if(verbose){
+  if(verbose_max){
     printf("\n\nhour counter: %d \n",counternr);
   }
 
   for(i=0;i<4;i++){
     reg = i+(counternr*4)+8;
     r[i] = wiringPiI2CReadReg8(q2w, reg);
-    if(verbose){
+    if(verbose_max){
       printf("register %2d: value [%d]: %02X\n",reg,i,r[i]);
     }
   }
   for(i=0;i<4;i++){
     value <<= 8;
     value |= (r[3-i]);
-    if(verbose){
+    if(verbose_max){
       printf("value (i=%d): %08X\n",i,value);
     }
 
   }
-  if(verbose){
+  if(verbose_max){
     printf("value: %08d / %08x\n",value,value);
   }
 
@@ -172,12 +172,12 @@ double GetTemperaturValue_LM75(int lm75_devicenumber)
     exit(1);
   }
 
-  if(verbose){
+  if(verbose_max){
     printf("\n\nlm75 device\n");
   }
 
   value = wiringPiI2CReadReg16(q2w, 0);
-  if(verbose){
+  if(verbose_max){
     printf("register value : %04X\n",value);
   }
 
@@ -202,12 +202,12 @@ char GetTemperaturValue_LM75_8Bit(int lm75_devicenumber)
     exit(1);
   }
 
-  if(verbose){
+  if(verbose_max){
     printf("\n\nlm75 device\n");
   }
 
   value = wiringPiI2CReadReg16(q2w, 0);
-  if(verbose){
+  if(verbose_max){
     printf("register value : %04X\n",value);
   }
 
@@ -300,25 +300,11 @@ void Calibrate9s08(void)
   r |= wiringPiI2CReadReg8(q2w, 0x00);
 
   r2 = wiringPiI2CReadReg8(q2w, 24);
-  printf("%s : 9S08QG8 Sekunden: %7d Kalibrierwert: %4d\n",GetDateTimeString(),r,r2);
+  if(verbose){
+    printf("%s : 9S08QG8 Sekunden: %7d Kalibrierwert: %4d\n",GetDateTimeString(),r,r2);
+  }
 
   wiringPiI2CWriteReg8(q2w, 0x03, 0); //Kalibrierung
-
-/*
-  do{
-    //if((wait%20)==0){
-    //  printf("%4d\n",wait);
-    //}
-    printf("%4d\n",wait);
-    //puts(".");
-    //putchar('.');
-    sleep(1);
-  }while(--wait);
-  end = GetElapsedSecondsToday();
-  wiringPiI2CWriteReg8(q2w, 0x03, 200); //Kalibrierung fertigstellen
-  printf("ElapsedSecondsToday: %d\n",end);
-  printf("DifferenceSeconds: %d\n",start-end);
-*/
 
 }
 
@@ -347,6 +333,5 @@ void SetPWM(int ch, int val)
     }
     wiringPiI2CWriteReg8(q2w, ch, val);
   }
-
 
 }

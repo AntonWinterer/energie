@@ -30,8 +30,6 @@ void ValueToDatabase(char* date_time, int countervalue, char wwtemperature,
    MYSQL_RES *res;
 
    FILE* fp;
-
-   /* Change me */
    char server[50];
    char user[50];
    char password[50];
@@ -56,16 +54,12 @@ void ValueToDatabase(char* date_time, int countervalue, char wwtemperature,
        }
        if(lines==0){
          sprintf(server,"%s",zeile);
-         printf("server: %s\n",server);
        }else if(lines==1){
          sprintf(user,"%s",zeile);
-         printf("user: %s\n",user);
        }else if(lines==2){
          sprintf(password,"%s",zeile);
-         printf("password: %s\n",password);
        }else if(lines==3){
          sprintf(database,"%s",zeile);
-         printf("database: %s\n",database);
        }
        lines++;
      }
@@ -74,23 +68,22 @@ void ValueToDatabase(char* date_time, int countervalue, char wwtemperature,
 
    conn = mysql_init(NULL);
 
-   /* Connect to database */
+   // Connect to database
    if (!mysql_real_connect(conn, server,
          user, password, database, 0, NULL, 0)) {
       printf("%s\n", mysql_error(conn));
       exit(1);
    }
 
-   if(verbose){
+   if(verbose_max){
      printf("  Server: %s\n",server);
      printf("Database: %s\n",database);
      printf("    User: %s\n",user);
      printf("Password: %s\n",password);
    }
 
-   /* send SQL query */
+   // send SQL query
    char sql_string[2048];
-   //sprintf(sql_string,"INSERT INTO energieverbrauch VALUES('%s', %d, %d, %d);",date_time,countervalue,hourcounter,wwtemperature);
    sprintf(sql_string,"INSERT INTO energieverbrauch (uhrzeit, counter, warmwassertemperatur, hourcounter1, hourcounter2, hourcounter3, hourcounter4) VALUES('%s', %d, %d, %d, %d, %d, %d);",
                        date_time,countervalue,wwtemperature,hourcounter1,hourcounter2,hourcounter3,hourcounter4);
 
@@ -103,15 +96,7 @@ void ValueToDatabase(char* date_time, int countervalue, char wwtemperature,
    }
    res = mysql_use_result(conn);
 
-   /* send SQL query */
-   if (mysql_query(conn, "show tables")) {
-      printf("%s\n", mysql_error(conn));
-      exit(1);
-   }
-   res = mysql_use_result(conn);
-
-
-   /* close connection */
+   // close connection
    mysql_free_result(res);
    mysql_close(conn);
 
