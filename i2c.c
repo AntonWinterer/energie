@@ -91,7 +91,7 @@ int GetCounterValue_MC9S08QG8(void)
   }
 
   for(i=0;i<4;i++){
-    r[i] = wiringPiI2CReadReg8(q2w, i);
+    r[i] = wiringPiI2CReadReg8(q2w, i+4);
     if(verbose_max){
       printf("register value [%d]: %02X\n",i,r[i]);
     }

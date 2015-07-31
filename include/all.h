@@ -16,3 +16,4 @@
 #define false 0
 
 extern int verbose;
+extern int verbose_max;
