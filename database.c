@@ -23,7 +23,7 @@ Systemvorbereitung:
 #include "include/all.h"
 
 
-void ValueToDatabase(char* date_time, int countervalue, char wwtemperature,
+void ValueToDatabase(char* date_time, int countervalue, char cabinettemperature, char wwtemperature,
                      int hourcounter1, int hourcounter2, int hourcounter3, int hourcounter4)
 {
    MYSQL *conn;
@@ -84,8 +84,8 @@ void ValueToDatabase(char* date_time, int countervalue, char wwtemperature,
 
    // send SQL query
    char sql_string[2048];
-   sprintf(sql_string,"INSERT INTO energieverbrauch (uhrzeit, counter, warmwassertemperatur, hourcounter1, hourcounter2, hourcounter3, hourcounter4) VALUES('%s', %d, %d, %d, %d, %d, %d);",
-                       date_time,countervalue,wwtemperature,hourcounter1,hourcounter2,hourcounter3,hourcounter4);
+   sprintf(sql_string,"INSERT INTO energieverbrauch (uhrzeit, counter, warmwassertemperatur, cabinettemperatur, hourcounter1, hourcounter2, hourcounter3, hourcounter4) VALUES('%s', %d, %d, %d, %d, %d, %d, %d);",
+                       date_time,countervalue,wwtemperature,cabinettemperature,hourcounter1,hourcounter2,hourcounter3,hourcounter4);
 
    if(verbose){
      printf("%s\n",sql_string);

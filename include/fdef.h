@@ -14,7 +14,7 @@ void Calibrate9s08(void);
 void SetPWM(int ch, int val);
 
 //Prototypen fuer database.c
-void ValueToDatabase(char* date_time, int countervalue, char wwtemperature,
+void ValueToDatabase(char* date_time, int countervalue, char cabinettemperature, char wwtemperature,
                      int hourcounter1, int hourcounter2, int hourcounter3, int hourcounter4);
 
 
