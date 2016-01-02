@@ -4,6 +4,7 @@
 #include <time.h>       /* time_t, struct tm, time, gmtime */
 #include <errno.h>
 #include <unistd.h>     // needed for sleep()
+#include <ctype.h>      //for isalnum()
 
 #include <wiringPi.h>
 #include <wiringPiI2C.h>

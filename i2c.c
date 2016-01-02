@@ -111,6 +111,41 @@ int GetCounterValue_MC9S08QG8(void)
   return(value);
 }
 
+void SetCounterValue_MC9S08QG8(int value) //todo
+{
+
+  int q2w;
+  int i2c_address = 0x50; //0x50 = RTC PCF8583; 0x68 = RTC DS1307
+  int i;
+  int r[5];
+
+  if ((q2w = wiringPiI2CSetup (i2c_address)) == -1){
+    printf("q2w: Unable to initialise I2C: %s\n", strerror (errno)) ;
+    exit(1);
+  }
+
+  if(verbose_max){
+    printf("\n\ncurrent counter\n");
+    printf("value: %d %02X\n",value,value);
+  }
+
+  for(i=0;i<4;i++){
+    r[i] = value&0x000000ff;
+    value >>= 8;
+    if(verbose_max){
+      printf("value (i=%d): %02X\n",i,r[i]);
+    }
+  }
+
+  for(i=0;i<4;i++){
+    wiringPiI2CWriteReg8(q2w, 4, i+4);
+    wiringPiI2CWriteReg8(q2w, 5, r[i]);
+    if(verbose_max){
+      printf("register value [%d]: %02X\n",i,r[i]);
+    }
+  }
+
+}
 
 int GetHourCounterValue_MC9S08QG8(int counternr)
 {
@@ -158,6 +193,49 @@ int GetHourCounterValue_MC9S08QG8(int counternr)
   return(value);
 }
 
+void SetHourCounterValue_MC9S08QG8(int counternr, int value)
+{
+
+  int q2w;
+  int i2c_address = 0x50; //0x50 = RTC PCF8583; 0x68 = RTC DS1307
+  int i;
+  int r[5];
+  //int value = 0;
+  int reg;
+
+  if ((q2w = wiringPiI2CSetup (i2c_address)) == -1){
+    printf("q2w: Unable to initialise I2C: %s\n", strerror (errno)) ;
+    exit(1);
+  }
+
+  if(counternr < 0 || counternr > 3){
+    printf("\n\nwrong counter nr (%d)",counternr) ;
+    exit(1);
+  }
+
+  if(verbose_max){
+    printf("\n\nhour counter: %d \n",counternr);
+    printf("value: %d %08X\n",value,value);
+  }
+
+  for(i=0;i<4;i++){
+    r[i] = value&0x000000ff;
+    value >>= 8;
+    if(verbose_max){
+      printf("value (i=%d): %02X\n",i,r[i]);
+    }
+  }
+
+  for(i=0;i<4;i++){
+    reg = i+(counternr*4)+8;
+    wiringPiI2CWriteReg8(q2w, 4, reg);
+    wiringPiI2CWriteReg8(q2w, 5, r[i]);
+    if(verbose_max){
+      printf("register value [%d]: %02X\n",i,r[i]);
+    }
+  }
+
+}
 
 double GetTemperaturValue_LM75(int lm75_devicenumber)
 {
@@ -335,3 +413,6 @@ void SetPWM(int ch, int val)
   }
 
 }
+
+
+

@@ -34,3 +34,14 @@ int GetElapsedSecondsToday(void)
   return(seconds);
 }
 
+int IsPowerdownBackupPossible(void)
+{
+  time_t rawtime;
+  struct tm* ptm;
+
+  time( &rawtime );
+  ptm = gmtime( &rawtime );
+
+  return(ptm->tm_sec > 3);
+}
+

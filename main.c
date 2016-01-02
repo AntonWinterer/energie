@@ -6,6 +6,8 @@ int verbose_max = false;
 int readtest = false;
 int writetest = false;
 int calibrate_9s08 = false;
+int restoredata_9S08 = false;
+
 
 int main(int argc, char **argv)
 {
@@ -29,7 +31,15 @@ int main(int argc, char **argv)
       verbose = true;
       calibrate_9s08 = true;
     }else if(strncmp(argv[1],"-d",2) == 0){
-      ValueToDatabase("2015-07-23 00:00:00",1,2,3,10,11,12,13);
+      ValueToDatabase(false,"2015-07-23 00:00:00",1,2,3,10,11,12,13);
+    }else if(strncmp(argv[1],"-t",2) == 0){
+      verbose = true;
+      ThreadPowerOff();
+      return(0);
+    }else if(strncmp(argv[1],"-T",2) == 0){
+      //verbose_max = true;
+      verbose = true;
+      restoredata_9S08 = true;
     }
   }else if(argc == 4){
     if(strncmp(argv[1],"-p",2) == 0){
@@ -62,6 +72,24 @@ int main(int argc, char **argv)
     return(0);
   }
 
+  if(restoredata_9S08){
+
+    BackupValueFromDatabase(&cc,&hc[0],&hc[1],&hc[2],&hc[3]);
+
+    SetCounterValue_MC9S08QG8(cc);
+    if(verbose){
+      printf("counter: %d\n",cc);
+    }
+
+    for(i=0;i<4;i++){
+      SetHourCounterValue_MC9S08QG8(i,hc[i]);
+      if(verbose){
+        printf("hourcounter [%d]: %d\n",i,hc[i]);
+      }
+    }
+
+    return(0);
+  }
 
   strcpy(ts,GetDateTimeString());
   if(verbose){
@@ -87,10 +115,80 @@ int main(int argc, char **argv)
     }
   }
 
-  ValueToDatabase(ts,cc,tv[0],tv[1],hc[0],hc[1],hc[2],hc[3]);
+  ValueToDatabase(false,ts,cc,tv[0],tv[1],hc[0],hc[1],hc[2],hc[3]);
 
   return(0);
 }
 
 
+void ThreadPowerOff(void)
+{
+  int x = piThreadCreate(ThreadPowerCheck);
+  if(x != 0){
+    printf("it didn't start\n");
+  }
+  if(verbose){
+    printf("start succesfully\n");
+  }
+  while(true);
+}
+
+
+PI_THREAD(ThreadPowerCheck)
+{
+  int pinstate;
+  int wait4low = false;
+  int i;
+  char ts[50];  //timestring
+  int cc;       //current counter (9S08QG8)
+  int hc[4];    //hour counter (9S08QG8)
+  char tv[2];   //temperatur value (LM75)
+
+
+
+  wiringPiSetupGpio();
+  pinMode(4,INPUT);
+  pullUpDnControl(4, PUD_UP) ;
+
+  pinstate = digitalRead(4);
+  if(verbose){
+    printf("pin 4 state is: %d\n",pinstate);
+  }
+
+  for(;;){
+    pinstate = digitalRead(4);
+    if(pinstate == 1){
+      if(wait4low == false){
+        if(verbose){
+          printf("pin is high\n");
+        }
+        if(IsPowerdownBackupPossible()){
+
+          strcpy(ts,GetDateTimeString());
+          cc = GetCounterValue_MC9S08QG8();
+          for(i=0;i<4;i++){
+            hc[i] = GetHourCounterValue_MC9S08QG8(i);
+          }
+          for(i=0;i<2;i++){
+            tv[i] = GetTemperaturValue_LM75_8Bit(i);
+          }
+          ValueToDatabase(true,ts,cc,tv[0],tv[1],hc[0],hc[1],hc[2],hc[3]);
+          if(verbose){
+            printf("data stored\n");
+          }
+          wait4low = true; //d.h. Spanung muss auch wirklich weg gehen
+
+        }else{
+          if(verbose){
+            printf("blocked, wait 1sec\n");
+          }
+        }
+      }
+    }else{ //pin is low
+      wait4low = false;
+    }
+    delay(1000);
+  }
+  return(0);
+}
 
